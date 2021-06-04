@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<nav class="navbar sticky-top navbar-dark bg-primary">
+    <h1 style="color: cyan;">PictureJet</h1>
+
+    <a style="margin-right:5px;" class="btn btn-secondary home"  href="/" role="button">Home <i class="fas fa-home"></i></a>
+
+</nav>
+
+<div style="text-align: center;margin-top: 10px;" class="container">
+	<form action="" method="POST" class="d-flex">
+		{% csrf_token %}
+	    <input required="true" name="name" class="form-control me-2" type="search" placeholder="Enter user first name/last name for search.." aria-label="Search">
+	    <button class="btn btn-outline-success" type="submit">Search</button>
+	</form>
+
+	<div style="margin-top: 10px;text-align: left; ">
+	    {% for i in user %}
+	        <a style="text-decoration: none; " href="show-profile/{{ i.id }}/"> 
+	    	    <span style="color: white;font-size:20px;">{{ i.first_name }} {{ i.last_name }}  </sapn><br>	
+	        </a>
+        {% endfor %}
+    </div>
+</div>
+
+
+
+{% endblock %}

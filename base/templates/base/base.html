@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+{% load static %}
+
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'all.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap.min.css' %}">
+
+
+    <style type="text/css">
+    	h1{
+    		color: cyan;
+    	}
+
+        h3{
+            color: blue;
+        }
+
+
+    </style>
+
+	<title></title>
+</head>
+<body style="background-color: black;">
+    
+
+    <script src="{% static 'jquery.js' %}"></script>
+
+     <script type="text/javascript" src="{% static 'bootstrap.min.js' %}"></script>
+     
+     <script type="text/javascript" src="{% static 'all.min.js' %}"></script>
+     
+
+    
+    
+	{% block content %}
+	
+
+
+    {% endblock %}
+
+
+
+</body>
+</html>

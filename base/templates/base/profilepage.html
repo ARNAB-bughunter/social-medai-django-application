@@ -1,0 +1,190 @@
+{% extends 'base.html' %} 
+{% block content %}
+
+<nav class="navbar sticky-top navbar-dark bg-primary">
+    <h1 style="color: cyan;">PictureJet</h1>
+
+    <a style="margin-right:5px;" class="btn btn-secondary home" href="/" role="button">
+        Home
+        <i class="fas fa-home"></i>
+    </a>
+</nav>
+
+<div style="text-align: center;" class="container">
+    <div style="margin-top:15px; padding: 5px;border-style:inset double; border-radius: 10px;border-color: gray;border-width: 5px; text-align: center;" class="container">
+        <img src="{{ profile.profile_picture.url }}" style=" border-radius: 20%;" height=200>
+        <br>
+        <label style="font-size: 40px;color: white  ;text-shadow: 5px 5px 15px red;">{{ profile.user.first_name }} {{ profile.user.last_name }}</label>
+        <br>
+
+            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                See More <i class="fas fa-ellipsis-v"></i> 
+            </button>
+            </p>
+            <div class="collapse" id="collapseExample">
+                <div style="text-align:left;font-size: 15px;background-color:black;color: white;" class="card card-body">
+
+                     <div class="input-group gap-3">
+                         <i  class="fas fa-map-marked-alt"></i>
+                        <lable>{{ profile.address }}  </lable>  
+
+                     </div>
+
+                     <div class="input-group gap-3">
+                        <i class="fas fa-birthday-cake"></i>
+                        <span>{{ profile.dob }} </span>   
+                    </div>
+
+
+                    <div class="input-group gap-3">
+                        <i class="fas fa-venus-mars"></i>
+                        <span>{{ profile.gender }}</span>
+                    </div>
+
+                </div>
+            </div>
+        
+        <br> 
+        {% if access %}
+        <p>
+        	 <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#profile_picture" aria-expanded="false" aria-controls="profile_picture">
+             <i class="fas fa-portrait"></i>   Update Profile Picture
+             </button>
+            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#bio" aria-expanded="false" aria-controls="bio">
+                <i class="fas fa-edit"></i> Add more about yourself
+            </button>
+        </p>
+        <div class="row">
+            <div class="col">
+                <div class="collapse multi-collapse" id="profile_picture">
+                    <div style="background-color:black;border:dashed;" class="card card-body">
+                        <form action="edit-profile-picture/" method="POST" enctype="multipart/form-data"> 
+                            {% csrf_token %}
+                            {{ form_1.as_p }}                        	
+                        	<input class="btn btn-primary" type="submit" value="Update" >
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="collapse multi-collapse" id="bio">
+                    <div style="background-color:black;border:dashed;" class="card card-body">
+                       <form action="edit-profile/" method="POST">
+                        {% csrf_token %}
+
+                       {{ form_2.bio }}
+
+                       {{ form_2.dob }}
+
+                       {{ form_2.address }}
+
+                     <input list="gender_type"  class="form-select" name="gender" required="true"  placeholder="Enter Your Gender">
+                       <datalist   id="gender_type">
+                            <option value="Male">
+                            <option value="Female">
+                            <option value="Other">                           
+                       </datalist>
+
+                       <input type="submit"  class="btn btn-primary" value="Update">
+
+                       </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% endif %}
+    </div>
+
+    <div style="border-style: double;">
+        {% for i in post %}
+        <div style="margin: 5px; padding: 5px;border-style:inset double; border-radius: 10px;border-color: gray;border-width: 5px;">
+            <div class="row">
+                <div class="col-8">
+                    <p style="text-align: left;color:white;font-size:20px;">{{ i.user.first_name }} {{ i.user.last_name }}</p>
+                </div>
+                <div style="text-align: right;" class="col">
+                    {% if access %}
+                    <a class="btn btn-danger delete_p" style="text-align: right;" href="delet-post/{{ i.id }}" role="button"> 
+                          <i class="fas fa-trash-alt"></i> Delete</a>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            <p style="color: white;font-size: 10px;text-align: left;">{{ i.created }}</p>
+              {% if i.get_extension == 'vdo' %}
+                <video  controls >
+                    <source src="{{ i.post_picture.url }}" type="video/mp4">
+                </video>
+                
+            {% elif i.get_extension == 'pic' %}
+               <img class="img-thumbnail img-fluid" src="{{ i.post_picture.url }}">
+            {% endif %}
+            <br>
+              <div style="text-align: center;" class="row">
+            <div class="col-6">
+                <a class="btn btn-primary btn-sm like_p" href="like-post-profile/{{ i.id }}" id={{ i.id }} role="button">
+                    {% if request.user in i.likes_user.all %}
+                        <i style="color:black;" class="fas fa-thumbs-up fa-2x"></i><span style="font-size:20px;"> {{ i.likes_user.count }}</span>
+                    {% else %}
+                        <i style="color:black;" class="far fa-thumbs-up fa-2x"></i><span style="font-size:20px;"> {{ i.likes_user.count }}</span>
+                    {% endif %}
+                </a>
+            </div>
+            <div class="col-6">
+                <a class="btn btn-primary btn-sm" href="show-comment/{{ i.id }}" role="button"><i class="fas fa-comment-dots fa-2x"></i></a>
+            </div>
+        </div>
+        </div>
+        <hr>
+      
+        {% endfor %}
+    </div>
+
+</div>
+
+<script type="text/javascript">
+    $(".like_p").click(function(e) {
+        e.preventDefault();
+        var href=this.href;
+        $.ajax({
+            url:href,
+            data:{},
+        });
+
+        setTimeout(function() {
+         location.reload()
+        },1000);
+    })
+
+
+    $(".delete_p").click(function(e) {
+        e.preventDefault();
+        var href=this.href;
+        $.ajax({
+            url:href,
+            data:{},
+        });
+
+        setTimeout(function() {
+         location.reload()
+        },1000);
+    })
+
+    $(".home").click(function(e){
+        e.preventDefault();
+        $(location).attr('href',this.href);
+
+        
+
+
+    })
+
+    
+
+    
+</script>
+
+
+
+{% endblock %}

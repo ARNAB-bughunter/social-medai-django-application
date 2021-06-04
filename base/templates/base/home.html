@@ -1,0 +1,276 @@
+{% extends 'base.html' %} 
+
+{% block content %} 
+
+{% if messages %}
+    {% for message  in messages %}
+     
+        <div style="text-align:center;" class="alert alert-danger" role="alert">
+            <b> {{ message  }} </b>
+        </div>
+
+    {% endfor %}
+{% endif %}
+
+
+
+<div  class="modal fade container-fluid" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Start Conversation</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="createthread/" method="POST">
+            {% csrf_token %}
+
+            <input list="user"  class="form-select" name="reciver_name" autocomplete="false" required="true" placeholder="Enter User Name">
+            <datalist  id="user">
+                {% for i in user_list %}
+                     <option value="{{ i.first_name }} {{  i.last_name }}"></option>
+                {% endfor %}
+            </datalist>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end" style="margin-top:5px;">
+                <input class="btn btn-success" type="submit" value="Start Chatting" >
+            </div>
+          
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<nav class="navbar sticky-top navbar-dark bg-primary">
+    <h3 style="color: black; border: dotted;padding: 2px;" area-expanded="true">PictureJet</h3>
+    
+    <button style="border:solid;margin-right:20px;" class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span style="size: 25px;color: black;">ADD <i class="fas fa-plus-square"></i></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li style="background-color: black;padding: 5px;margin: 5px;" class="nav-item">
+                <form action="" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <div class="row">
+                        <div class="col-6">
+                            {{form.caption}}
+                        </div>
+                        <div class="col-6">
+                            {{form.post_picture}}
+                        </div>
+                    </div>
+
+                    <div style="margin-top:5px; " class="d-grid gap-2 col-6 mx-auto">
+                        <div class="d-grid gap-2">
+                            <input type="submit" class="btn btn-warning" value="Post">
+                        </div>
+                    </div>
+                </form>
+            </li>
+        </ul>
+
+    </div>
+
+    <div class="container-fluid">
+
+        <div style="text-align: center;" class="row">
+            <a style="border:solid;" class="btn btn-outline-info btn-sm col-6" href="profilepage/"><h5 style="color: black;">{{request.user.first_name}}</h5></a>
+
+
+            <div class="btn-group dropend col-6 ">
+                <button style="border:solid;" type="button" class="btn btn-primary " data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div style="min-width:100px;text-align:center;max-height:100px;max-width:300;overflow-y:auto;" class="dropdown-menu">
+
+                    <a class="btn btn-danger btn-sm" href="logout/">Logout <i class="fas fa-sign-out-alt"></i> </a>
+
+                    <div class="dropdown-divider"></div>
+
+                    <a class="btn btn-info btn-sm" href="search/">Search <i class="fas fa-search"></i> </a>
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row">
+
+                <button style="text-align:center;" type="button" class="btn btn-info col-4" data-bs-toggle="modal" data-bs-target="#exampleModal" >
+
+                    <i style="color:black;" class="fas fa-dove"></i>
+               
+                </button>
+            
+        <div style="margin-right: 5px; " class="btn-group dropstart col">
+            <button class="btn btn-info btn-sm" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-bell"></i>
+                    {% if count_notification.count > 0 %}
+                        {% if  count_notification.count > 9 %}
+                           9+
+                        {% else %}
+                          {{ count_notification.count }}
+
+                      {% endif %}
+
+                    {% endif %}
+            </button>
+
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink" style="min-width:240px;max-height: 100px;overflow-y:auto; ">
+
+                {% if count_notification.count <= 0 %}
+                    <b><p style="font-size: 12px;"> No New Notification</p></b>
+
+                {% else %}
+                {% for i in notifications_like %}
+                       <b><p style="font-size: 12px;text-align: center;">
+                        {% if i.notification_type == 1 %}
+                            <a  style="text-decoration: none;" href="show-post/{{ i.post.id }}/{{ i.id }}">{{ i.from_user.first_name }} {{ i.from_user.last_name }} Liked Your Post  </a>
+                        {% elif i.notification_type == 2 %}
+                            <a style="text-decoration: none;" href="show-post/{{ i.post.id }}/{{ i.id }}">{{ i.from_user.first_name }} {{ i.from_user.last_name }} Commented on Your Post  </a>
+                        {% elif i.notification_type == 3 %} 
+                            <a style="text-decoration: none;" href="inbox/{{ i.thread.id }}/{{ i.id }} "> New Message from {{ i.from_user.first_name }} {{ i.from_user.last_name }}  </a>
+                        {% elif i.notification_type == 4 %}
+                            <a style="text-decoration: none;" href="show-post/{{ i.post.id }}/{{ i.id }}"> {{ i.from_user.first_name }} {{ i.from_user.last_name }} Added new Post </a>
+                        {% endif %}
+
+                                {% if i.user_is_seen %}
+                                   <i class="fas fa-check"></i>
+                                {% endif %}
+                            </a>
+                        </p></b>    
+                       <div class="dropdown-divider"></div>                   
+                                                   
+                {% endfor %}
+
+                {% endif %}
+            
+            </div>
+        </div>
+
+
+    </div>
+
+    </div>
+
+
+</nav>
+
+<div  class=" container">
+
+    {% for i in post %}
+    <div id="post_div" style="margin: 5px; padding: 5px;border-style:inset double; border-radius: 10px;border-color: gray;border-width: 5px;">
+
+
+        {% for j in user_profile %}
+            {% if j.user == i.user %}
+                <img src="{{ j.profile_picture.url }}"  style=" border-radius: 25%; border: solid;border-color: white;" height="50px;">
+            {% endif %}
+        {% endfor %}
+
+        <a href="show-profile/{{ i.user.id }}" style="text-decoration:none;">
+            <span style="color: white;font-size:20px;">{{ i.user.first_name }} {{ i.user.last_name }}</sapn>
+        </a>
+         <span style="color: white;font-size: 13px;">({{ i.created }})</span>
+        <hr style="color: white;">
+        <p style="color: white;font-size: 13px;">{{ i.caption }}</p>
+        <div  style="text-align: center;">
+
+            {% if i.get_extension == 'vdo' %}
+                <video   controls>
+                    <source src="{{ i.post_picture.url }}" type="video/mp4">
+                </video>
+                
+            {% elif i.get_extension == 'pic' %}
+               <img class="img-thumbnail img-fluid" src="{{ i.post_picture.url }}">
+            {% endif %}
+
+
+        </div>
+
+
+        <hr style="color: white;">
+        <div class="container-fluid">
+            <div style="text-align: center;" class="row">
+                <div  class="col-6">
+                    <a class="btn btn-primary btn-sm like_h" href="like-post/{{ i.id }}" id={{ i.id }} role="button">
+
+                        {% if request.user in i.likes_user.all %}
+                            <i style="color:black;" class="fas fa-thumbs-up fa-2x"></i><span style="font-size:20px;"> {{ i.likes_user.count }}</span>
+                        {% else %}
+                            <i style="color:black;" class="far fa-thumbs-up fa-2x"></i><span style="font-size:20px;"> {{ i.likes_user.count }}</span>
+                        {% endif %}
+
+                    </a>
+                </div>
+                <div class="col-6">
+                    <a class="btn btn-primary btn-sm" href="show-comment/{{ i.id }}" role="button"><i class="fas fa-comment-dots fa-2x"></i></a>
+                </div>
+            </div>
+            <hr style="color: white;">
+
+            <div style="text-align: center;" class="container">
+                <form id="form{{ i.id }}" action="add-comment/{{ i.id }}/"  method="POST">
+                    {% csrf_token %}
+                    <div class="row">
+
+                        <div style="border-style: dotted;border-color: black;"  class="input-group margin-bottom-sm">
+                            <textarea class="form-control" name="text" required="true" id="input{{ i.id }}"></textarea>
+                            <button  class="btn btn-primary" type="submit"><i class="fas fa-arrow-circle-right fa-2x"></i></button>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <script type="text/javascript">
+         $(document).on('submit','#form{{ i.id }}',function(e){
+        e.preventDefault();
+        $.ajax({
+            type:'POST',
+            url:this.action,
+            data:
+            {
+                text:$("#input{{ i.id }}").val(),
+                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
+            },
+        
+            })
+        setTimeout(function() {
+         location.reload()
+        },1000);
+        
+        });
+
+    </script>
+
+    {% endfor %}
+</div>
+
+<script type="text/javascript">
+    $(".like_h").click(function(e) {
+        e.preventDefault();
+        var href=this.href;
+
+        $.ajax({
+            url:href,
+            data:{},
+        });
+
+        setTimeout(function() {
+         location.reload()
+        },1000);
+
+    }) 
+   
+
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'base.html'  %}
+
+
+{% block content %}
+
+<nav class="navbar sticky-top navbar-dark bg-primary">
+    <h1 style="color: cyan;">PictureJet</h1>
+
+    <a  style="margin-right:5px;" class="btn btn-secondary home"  href="/" role="button">
+    	Home
+    	<i class="fas fa-home"></i>
+    </a>
+    
+</nav>
+
+
+<div class="container">
+	
+	<div style="text-align: center;padding: 5px;border-style:inset double; border-radius: 10px;border-color: gray;border-width: 5px;" class="container">
+		<p style="color: white;font-size:20px;text-align: left;">{{ post.user.first_name }} {{ post.user.last_name }}</p>
+		<p style="color: white;font-size: 13px;text-align: left;">{{ post.caption }}</p>
+
+		<img class="img-thumbnail img-fluid" src="{{ post.post_picture.url }}">
+		<hr style="color: white;">
+		{% for i in all_comments %}
+		<div style="border: ridge;border-radius: 10px;">
+			<p style="color: cyan;text-align:left;font-size:20px;font-style: bold">{{ i.commenter.first_name }} {{ i.commenter.last_name }} </p>
+			<p style="color: white;text-align: left;font-size:15px;" >{{ i.text }}</p>
+     	</div>
+	    {% endfor %}
+	    <hr style="color: white;">
+	    	<form    action=""  method="POST">
+                    {% csrf_token %}
+                  
+                    <div style="border-style: dotted;border-color: black;"  class="input-group margin-bottom-sm ">
+                      	{{ comment }}
+                           
+                        <button  class="btn btn-primary" type="submit"><i class="fas fa-arrow-circle-right fa-2x"></i></button>
+                    </div>                                         
+                  
+                </form>
+	</div>
+</div>
+
+<script type="text/javascript">
+	
+
+	
+</script>
+
+{% endblock %}

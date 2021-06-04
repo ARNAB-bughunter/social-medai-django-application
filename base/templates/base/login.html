@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<h1>PictureJet<h6 style="color:lightcyan;"> Each Picture Tells A Story &#128522; </h6></h1>
+
+<div style="background-color: cyan;border-radius: 10px;padding: 5px;" class="container ">
+<h3>LOGIN</h3>
+
+<form style="text-align: center;" action="" method="POST">
+	{% csrf_token %}
+	<div style="border-style: dotted;border-color: black;"  class="input-group margin-bottom-sm">
+		<span  class="input-group-addon"> <i class="far fa-user fa-2x"></i></span>
+		<input class="form-control" type="text" name="username" required="true" placeholder="Enter User Name"> <br> 
+	</div>
+
+	<div style="margin-top:5px;  border-style: dotted;border-color: black;" class="input-group margin-bottom-sm">
+		<span  class="input-group-addon"> <i class="fas fa-key fa-2x"></i> </span>
+		<input class="form-control" type="password" name="password" required="true"  placeholder="Enter Password" id="id_password"><br>
+		<button type="button" onclick="change()">
+        <i id="eye"  class="fas fa-eye-slash"></i>
+      </button>
+		
+	</div>
+
+	
+	<div style="margin-top: 5px;" class="d-grid gap-2 col-6 mx-auto">
+            <input type="submit" class="btn btn-primary" value="Log in">
+    </div>
+</form>
+
+<script type="text/javascript">
+    function change() {
+       x= document.querySelector("#id_password").getAttribute("type")
+       if (x=='password'){
+        document.querySelector("#id_password").setAttribute("type","text")
+        document.querySelector("#eye").setAttribute("class","fas fa-eye")
+        }
+        else if (x=='text') {
+         document.querySelector("#id_password").setAttribute("type","password")
+        document.querySelector("#eye").setAttribute("class","fas fa-eye-slash")   
+        }
+    }
+</script>
+
+
+<hr>
+<label><b>Don't have an account?</b></label>
+<a class="btn btn-primary" href="signup/" role="button">Create New Account</a>
+
+{% if messages %}
+<hr style="height: 10px;">
+	{% for i in messages %}
+	 
+        <div style="text-align:center;" class="alert alert-danger" role="alert">
+            <b> {{ i }} </b>
+        </div>
+
+	{% endfor %}
+{% endif %}
+
+
+</div>
+
+
+
+{% endblock %}

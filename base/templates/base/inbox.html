@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<meta http-equiv="refresh" content="80">
+<nav class="navbar sticky-top navbar-dark bg-primary">
+    <h1 style="color: cyan;">PictureJet</h1>
+
+    <a style="margin-right:5px;margin:5px;" class="btn btn-secondary home"  href="/" role="button">Home <i class="fas fa-home"></i></a>
+
+</nav>
+<h4 style="color:seagreen;" class="container">{{ reciver.first_name }} {{ reciver.last_name }}</h4>
+
+<div style="text-align:center;" class="container">
+	
+	<div style="border-style:solid;margin-bottom: 10px;">
+	{% for i in all_message %}
+
+	{% if i.sender == request.user %}
+	<div class="row">
+	
+	<p class="col-6"></p>
+	<b><p class="col-0" style="color:white;text-align:right;">{{ i.text }}</p></b>
+
+	</div>
+	
+	{% else %}
+	
+	<div class="row">
+	
+	<p class="col-0"></p>
+	<b><p class="col-6" style="color:white;text-align:left;">{{ i.text }}</p></b>
+
+	</div>
+	
+
+	{% endif %}
+
+    
+
+	{% endfor %}
+
+	</div>
+
+	<form action="" method="POST">
+		{% csrf_token %}
+
+		<div style="border-style: dotted;border-color: black;"  class="input-group margin-bottom-sm">
+            <textarea class="form-control" name="message" autofocus="true" required="true" ></textarea>
+            <button  class="btn btn-primary" type="submit"><i class="fas fa-arrow-circle-right fa-2x"></i></button>
+        </div>
+
+	</form>
+
+
+
+</div>
+{% endblock %}

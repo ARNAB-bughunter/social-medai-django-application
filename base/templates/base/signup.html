@@ -1,0 +1,54 @@
+{% extends 'base.html' %} {% block content %}
+<h1>PictureJet</h1>
+
+<div style="background-color: cyan;border-radius: 10px;padding: 5px;" class="container">
+    <h3>Create New Account</h3>
+    <form style="text-align: center;" action="" method="POST">
+        {% csrf_token %}
+        <div style="margin: 15px;" class="row">
+            <div class="col">
+                <input type="text" required="true" name="first_name" class="form-control" placeholder="Enter First Name">
+            </div>
+            <div class="col">
+                <input type="text" required="true" name="last_name" class="form-control" placeholder="Enter Last Name">
+            </div>
+        </div>
+        <div class="row" style="margin: 15px;">
+            <div class="col">
+                <input type="text" required="true" name="username" class="form-control" placeholder="Enter Username">
+            </div>
+            <div class="col">
+                <input type="email" required="true" name="email" class="form-control" placeholder="Enter email adress">
+            </div>
+        </div>
+
+        <div style="margin: 15px;" class="row">
+            <div class="col">
+                <input type="password" class="form-control" name="password" placeholder="Enter password" required="true">
+            </div>
+            <div class="col">
+                <input type="password" class="form-control" name="conform_password" placeholder="conform password" required="true">
+            </div>
+
+        </div>
+
+        <div class="d-grid gap-2 col-6 mx-auto">
+            <input type="submit" class="btn btn-primary" value="Sign-Up">
+        </div>
+
+    </form>
+
+{% if messages %}
+<hr style="height: 10px;">
+    {% for message  in messages %}
+     
+        <div style="text-align:center;" class="alert alert-danger" role="alert">
+            <b> {{ message  }} </b>
+        </div>
+
+    {% endfor %}
+{% endif %}
+</div>
+
+
+{% endblock %}
